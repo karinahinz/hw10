@@ -24,7 +24,7 @@ int main(){
   const double xmax = 20;
   const double dx = (xmax-xmin)/(N-1) ;
 
-  double dt = dx;
+  double dt = 0.01*dx;
   double t = 0;
   const int Na = 10;
   const int Nk = int(tEnd/Na/dt);
@@ -44,6 +44,11 @@ int main(){
   for(int i=1; i<=Na; i++)
   {
    for(int j=0; j<Nk; j++){
+     step(u1,u0,dt,dx,D,N);
+     h=u0;
+     u0=u1;
+     u1=h;
+     t+=dt;
 
 
    }
@@ -63,8 +68,15 @@ void step(double* const f1, double* const f0,
           const double dt, const double dx,
           const double D, const int N)
 {
+  f1[0]=f0[0]+(D*dt)/(dx*dx)*(f0[1]-2*f0[0]+f0[N-1]);
+  f1[N-1]=f0[N-1]+(D*dt)/(dx*dx)*(f0[0]-2*f0[N-1]+f0[N-2]);
 
-}
+  
+  for(int i =1; i<N-1; i++){
+  f1[i]=f0[i]+(D*dt)/(dx*dx)*(f0[i+1]-2*f0[i]+f0[i-1]);
+  }
+}  
+  
 //-----------------------------------------------
 void initialize(double* const u0, const double dx,
                 const double dt, const double xmin,  const int N)
